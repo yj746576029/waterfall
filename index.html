@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>waterfall-分页无限加载</title>
+    <style>
+        body {
+            margin: 0;
+            position: relative;
+        }
+
+        img {
+            width: calc(50% - 20px);
+            margin: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="main"></div>
+</body>
+<script>
+    var cols = 2;//列数（自行计算）
+    var itemWidth = window.screen.width / 2; // 实际图片显示宽度
+    var page = 0;//分页加载
+    var heightArr = []; // 图片高度数组
+    var waibian = 20;//外边框宽度
+    function waterfall() {
+        ++page;
+        var onloadImgs = [];//已经加载的图片（未显示）
+        var imgObj = getImgs();
+        for (var i = 0; i < imgObj.length; i++) {
+            (function (i) {
+                var img = new Image();
+                img.src = imgObj[i];
+                img.onload = img.onerror = function () {
+                    onloadImgs.push(img);
+                    handleImgs();
+                }
+            })(i);
+        }
+        // 处理已经加载的图片
+        function handleImgs() {
+            console.log(onloadImgs)
+            if (onloadImgs.length == imgObj.length) {
+                for (var i = 0; i < onloadImgs.length; i++) {
+                    console.log('heightArr', heightArr)
+                    if (page == 1 && i < cols) {
+                        console.log(i)
+                        // 第一排
+                        heightArr[i] = (itemWidth - waibian) * onloadImgs[i].height / onloadImgs[i].width + waibian;//第一排高度追加
+                        onloadImgs[i].style.position = 'absolute';
+                        onloadImgs[i].style.left = i == 0 ? '0px' : itemWidth + '0px';
+                        onloadImgs[i].style.top = '0px';
+                    } else {
+                        console.log(i)
+                        //获取数组中的最小值
+                        var minHeight = null;
+                        var minIndex = null;
+                        for (var j = 0; j < heightArr.length; j++) {
+                            if (j == 0) {
+                                minHeight = heightArr[j];
+                                minIndex = j;
+                            } else {
+                                if (heightArr[j] < minHeight) {
+                                    minHeight = heightArr[j];
+                                    minIndex = j;
+                                }
+                            }
+                        }
+                        heightArr[minIndex] += (itemWidth - waibian) / onloadImgs[i].width * onloadImgs[i].height + waibian;//高度追加
+                        onloadImgs[i].style.position = 'absolute';
+                        onloadImgs[i].style.left = minIndex * itemWidth + 'px';
+                        onloadImgs[i].style.top = minHeight + 'px';
+                    }
+                    document.getElementById('main').appendChild(onloadImgs[i]);
+                }
+            }
+
+
+        }
+    }
+
+    function getImgs() {
+        var list = [
+            'https://cdn.pixabay.com/photo/2015/10/21/03/44/beach-998788_960_720.jpg',
+            'https://cdn.pixabay.com/photo/2020/06/08/22/10/couple-5276245_960_720.jpg',
+            'https://cdn.pixabay.com/photo/2020/06/11/21/25/imp-5288348_960_720.jpg',
+            'https://cdn.pixabay.com/photo/2020/06/10/01/32/cumulonimbus-5280578_960_720.jpg',
+            'https://cdn.pixabay.com/photo/2020/06/06/04/16/table-5265190_960_720.jpg',
+            'https://cdn.pixabay.com/photo/2016/03/26/13/09/notebook-1280538_960_720.jpg',
+            'https://cdn.pixabay.com/photo/2020/06/08/05/28/vortex-5273023_960_720.png',
+            'https://cdn.pixabay.com/photo/2020/06/03/16/30/wave-5255593_960_720.jpg',
+            'https://cdn.pixabay.com/photo/2020/05/28/08/00/girl-5230306_960_720.jpg',
+            'https://cdn.pixabay.com/photo/2020/06/10/09/19/cake-5281948_960_720.jpg',
+        ]
+        return list;
+    }
+
+    function getScrollTop() {
+        var scrollTop = 0, bodyScrollTop = 0, documentScrollTop = 0;
+        if (document.body) {
+            bodyScrollTop = document.body.scrollTop;
+        }
+        if (document.documentElement) {
+            documentScrollTop = document.documentElement.scrollTop;
+        }
+        scrollTop = (bodyScrollTop - documentScrollTop > 0) ? bodyScrollTop : documentScrollTop;
+        return scrollTop;
+    }
+    //文档的总高度
+    function getScrollHeight() {
+        var scrollHeight = 0, bodyScrollHeight = 0, documentScrollHeight = 0;
+        if (document.body) {
+            bodyScrollHeight = document.body.scrollHeight;
+        }
+        if (document.documentElement) {
+            documentScrollHeight = document.documentElement.scrollHeight;
+        }
+        scrollHeight = (bodyScrollHeight - documentScrollHeight > 0) ? bodyScrollHeight : documentScrollHeight;
+        return scrollHeight;
+    }
+    function getWindowHeight() {
+        var windowHeight = 0;
+        if (document.compatMode == "CSS1Compat") {
+            windowHeight = document.documentElement.clientHeight;
+        } else {
+            windowHeight = document.body.clientHeight;
+        }
+        return windowHeight;
+    }
+
+    window.onload = function () {
+        waterfall();
+    }
+
+    window.onscroll = function () {
+        if (getScrollTop() + getWindowHeight() == getScrollHeight()) {
+            //滚动到底加载更多
+            waterfall()
+        }
+    };
+
+</script>
+
+</html>

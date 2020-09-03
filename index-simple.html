@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>waterfall-基本</title>
+    <style>
+        body {
+            margin: 0;
+            position: relative;
+        }
+
+        img {
+            width: calc(50% - 20px);
+            margin: 10px;
+            float: left;
+        }
+    </style>
+</head>
+
+<body>
+    <img src="https://cdn.pixabay.com/photo/2015/10/21/03/44/beach-998788_960_720.jpg">
+    <img src="https://cdn.pixabay.com/photo/2020/06/08/22/10/couple-5276245_960_720.jpg">
+    <img src="https://cdn.pixabay.com/photo/2020/06/11/21/25/imp-5288348_960_720.jpg">
+    <img src="https://cdn.pixabay.com/photo/2020/06/10/01/32/cumulonimbus-5280578_960_720.jpg">
+    <img src="https://cdn.pixabay.com/photo/2020/06/06/04/16/table-5265190_960_720.jpg">
+    <img src="https://cdn.pixabay.com/photo/2016/03/26/13/09/notebook-1280538_960_720.jpg">
+    <img src="https://cdn.pixabay.com/photo/2020/06/08/05/28/vortex-5273023_960_720.png">
+    <img src="https://cdn.pixabay.com/photo/2020/06/03/16/30/wave-5255593_960_720.jpg">
+    <img src="https://cdn.pixabay.com/photo/2020/05/28/08/00/girl-5230306_960_720.jpg">
+    <img src="https://cdn.pixabay.com/photo/2020/06/10/09/19/cake-5281948_960_720.jpg">
+
+</body>
+<script>
+    window.onload = function () {
+        waterfall();
+    }
+
+    function waterfall(){
+        var cols = 2;//列数（自行计算）
+        var winWidth = window.screen.width; // 屏幕宽度
+        var heightArr = []; // 图片高度数组
+        var imgObj = document.getElementsByTagName('img');
+        var marginHeight = 20;//margin高度计算在内
+        for (var i = 0; i < imgObj.length; i++) {
+            if (i < cols) {
+                // 第一排
+                heightArr[i] = imgObj[i].clientHeight + marginHeight;//第一排高度追加
+            } else {
+                //获取数组中的最小值
+                var minHeight = null;
+                var minIndex = null;
+                for (var j = 0; j < heightArr.length; j++) {
+                    if (j == 0) {
+                        minHeight = heightArr[j];
+                        minIndex = j;
+                    } else {
+                        if (heightArr[j] < minHeight) {
+                            minHeight = heightArr[j];
+                            minIndex = j;
+                        }
+                    }
+                }
+                imgObj[i].style.position = 'absolute';
+                imgObj[i].style.left = minIndex * winWidth / 2 + 'px';
+                imgObj[i].style.top = minHeight + 'px';
+                heightArr[minIndex] += imgObj[i].clientHeight + marginHeight;//高度追加
+            }
+        }
+    }
+
+</script>
+
+</html>
