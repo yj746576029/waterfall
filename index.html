@@ -36,6 +36,16 @@
         window.onload = function () {
             waterfall();
         }
+
+        window.onscroll = function (e) {
+            var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+            var clientHeight = document.documentElement.clientHeight || document.body.clientHeight;
+            var scrollHeight = document.documentElement.scrollHeight || document.body.scrollHeight;
+            console.log('scrollTop:'+scrollTop,'clientHeight:'+clientHeight,'scrollHeight:'+scrollHeight)
+            if(scrollHeight > clientHeight && scrollTop + clientHeight >= scrollHeight-10) {
+                waterfall();
+            }
+        }
         
         function waterfall() {
             ++page;
@@ -53,7 +63,7 @@
             }
             // 处理已经加载的图片
             function handleImgs() {
-                console.log(onloadImgs)
+                // console.log(onloadImgs)
                 if (onloadImgs.length == imgObj.length) {
                     for (var i = 0; i < onloadImgs.length; i++) {
                         console.log('heightArr', heightArr)
@@ -62,7 +72,7 @@
                             // 第一排
                             heightArr[i] = (itemWidth - waibian) * onloadImgs[i].height / onloadImgs[i].width + waibian;//第一排高度追加
                             onloadImgs[i].style.position = 'absolute';
-                            onloadImgs[i].style.left = i == 0 ? '0px' : itemWidth + '0px';
+                            onloadImgs[i].style.left = i == 0 ? '0px' : itemWidth + 'px';
                             onloadImgs[i].style.top = '0px';
                         } else {
                             console.log(i)
@@ -88,8 +98,6 @@
                         document.getElementById('main').appendChild(onloadImgs[i]);
                     }
                 }
-    
-    
             }
         }
     
