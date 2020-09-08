@@ -17,11 +17,74 @@
             margin: 10px;
             float: left;
         }
+
+        #modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: black;
+        }
+
+        #modal>div {
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+        }
+
+        #modal>div:nth-child(1) {
+            top: 40vh;
+            left: calc( 50vw - 10vh);
+            background-color: white;
+            width: 20vh;
+            height: 20vh;
+            animation: move 3s infinite;
+            animation-fill-mode: both;
+            border-radius: 50%;
+        }
+
+        #modal>div:nth-child(2) {
+            font-size: 5vw;
+            
+        }
+
+        @keyframes move {
+            from {
+                font-size: 5vh;
+                opacity: 0;
+                transform: rotateY(-720deg);
+            }
+
+            1% {
+                font-size: 5vh;
+                opacity: 1;
+            }
+
+            99% {
+                font-size: 5vh;
+                opacity: 1;
+            }
+
+            to {
+                font-size: 5vh;
+                opacity: 0;
+            }
+        }
     </style>
 </head>
 
 <body>
     <div id="main"></div>
+    <div id="modal">
+        <div></div>
+        <div>loading</div>
+    </div>
     <script src="https://cdn.bootcdn.net/ajax/libs/vConsole/3.3.4/vconsole.min.js"></script>
     <script>
         var vConsole = new VConsole();
@@ -41,12 +104,12 @@
             var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
             var clientHeight = document.documentElement.clientHeight || document.body.clientHeight;
             var scrollHeight = document.documentElement.scrollHeight || document.body.scrollHeight;
-            console.log('scrollTop:'+scrollTop,'clientHeight:'+clientHeight,'scrollHeight:'+scrollHeight)
-            if(scrollHeight > clientHeight && scrollTop + clientHeight >= scrollHeight-10) {
+            console.log('scrollTop:' + scrollTop, 'clientHeight:' + clientHeight, 'scrollHeight:' + scrollHeight)
+            if (scrollHeight > clientHeight && scrollTop + clientHeight >= scrollHeight - 10) {
                 waterfall();
             }
         }
-        
+
         function waterfall() {
             ++page;
             var onloadImgs = [];//已经加载的图片（未显示）
@@ -95,12 +158,13 @@
                             onloadImgs[i].style.left = minIndex * itemWidth + 'px';
                             onloadImgs[i].style.top = minHeight + 'px';
                         }
+                        document.getElementById('modal').style.display='none';
                         document.getElementById('main').appendChild(onloadImgs[i]);
                     }
                 }
             }
         }
-    
+
         function getImgs() {
             var list = [
                 'https://cdn.pixabay.com/photo/2015/10/21/03/44/beach-998788_960_720.jpg',
@@ -115,8 +179,8 @@
                 'https://cdn.pixabay.com/photo/2020/06/10/09/19/cake-5281948_960_720.jpg',
             ]
             return list;
-        }  
-    
+        }
+
     </script>
 </body>
 
